@@ -7,8 +7,10 @@ from tkinter.messagebox import *
 from string import *
 from json import *
 import pyperclip
+from tkinter.simpledialog import *
 
-email="abenezerangel@gmail.com"
+
+
 
 
 
@@ -190,6 +192,10 @@ def password_focus(event):
 
 # ---------------------------- UI SETUP ------------------------------- #
 window=Tk()
+
+
+
+
 window.title("Password Manager")
 window.config(padx=10,pady=10)
 canvas=Canvas(window,width=200, height=200)
@@ -208,16 +214,42 @@ search=Button(text="Search",width=6,command=search).grid(column=2,padx=0,row=1,s
 email_entry=Entry(width=56)
 email_entry.bind("<KeyPress-Return>",password_focus)
 email_entry.grid(column=1,row=2,columnspan=2,sticky=W)
-email_entry.insert(0,email)
+
 password_entry=Entry(width=37,borderwidth=1)
 password_entry.grid(column=1,row=3,padx=0,sticky=W)
-print(len(password_entry.get()))
+# print(len(password_entry.get()))
 password_entry.bind("<Return>",add_password_keypress)
 
 generator=Button(text= "Generate Password",width=14,command =generate_password,borderwidth=1)
 generator.grid(column=2,row=3,sticky=EW,padx=0)
 add=Button(text="Add",width=46,borderwidth=1 , command=lambda: add_password_button())
 add.grid(column=1,row=4,columnspan=2,sticky=EW)
+try:
+    with open("log") as reader:
+            times_opened=reader.read()
+
+
+            if len(times_opened)==0:
+
+                raise EXCEPTION
+
+except :
+    with open("log",mode="w") as writer:
+        writer.write("0")
+finally:
+    with open("log") as reader:
+        times_opened=int(reader.read())
+
+    with open("log","w") as writer:
+        writer.write(str(times_opened+1))
+
+if times_opened==0:
+    temp_email=askstring("Default email:","What would you like to use as a default email:" )
+    with open("email_list","w")as writer:
+        writer.write(temp_email)
+with open("email_list") as reader:
+    email=reader.read()
+email_entry.insert(0,email)
 
 
 window.mainloop()
